@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DailyDose | Professional Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="logo">DailyDose</div>
+    <div class="tagline">Medication and Vitamin Scheduling System</div>
+  </header>
+
+  <main class="app-container">
+    <section class="schedule-section">
+      <div class="card calendar-card">
+        <div id="grid" class="grid"></div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card profile-card">
+        <h3>1. User Health Profile</h3>
+        <label class="section-label">Select all that apply:</label>
+        <div class="checkbox-group" id="statusGroup">
+          <label class="check-container">
+            <input type="checkbox" value="pregnant">
+            <span>Pregnant / Nursing</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="diabetic">
+            <span>Diabetic</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="kidney">
+            <span>Kidney / Liver Concern</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="high_bp">
+            <span>High Blood Pressure</span>
+          </label>
+        </div>
+
+        <div class="meal-scheduler">
+          <label class="section-label">Meal Times (24h format)</label>
+          <div class="meal-row">
+            <span>Breakfast</span><input type="number" id="breakfastTime" value="8" min="0" max="23">
+          </div>
+          <div class="meal-row">
+            <span>Lunch</span><input type="number" id="lunchTime" value="13" min="0" max="23">
+          </div>
+          <div class="meal-row">
+            <span>Dinner</span><input type="number" id="dinnerTime" value="19" min="0" max="23">
+          </div>
+        </div>
+      </div>
+
+      <div class="card entry-card">
+        <h3>2. Add Medication</h3>
+        <form id="drugForm">
+          <div class="input-group">
+            <label>Name</label>
+            <input id="name" type="text" placeholder="e.g. Magnesium" required />
+          </div>
+          <div class="input-group">
+            <label>Dosage</label>
+            <input id="dosage" type="text" placeholder="e.g. 200mg" required />
+          </div>
+          <div class="row">
+            <div class="input-group">
+              <label>Times/Day</label>
+              <input id="freq" type="number" min="1" max="6" value="1">
+            </div>
+            <div class="input-group">
+              <label>Meal Relation</label>
+              <select id="mealRelation">
+                <option value="any">Anytime</option>
+                <option value="with_meal">With Meal</option>
+                <option value="empty">Empty Stomach</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-add">Add to Regimen</button>
+        </form>
+      </div>
+
+      <div class="card list-card">
+        <h3>3. Current List</h3>
+        <ul id="list" class="med-list"></ul>
+        <button id="generate" class="btn-generate">Generate Optimized Plan</button>
+      </div>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
