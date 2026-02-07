@@ -1,31 +1,60 @@
 :root {
-  --primary-teal: #0d9488;
+  --primary: #0d9488;
   --primary-dark: #0f766e;
-  --primary-light: #f0fdfa;
+  --primary-soft: #f0fdfa;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
   --border: #e2e8f0;
-  --text-dark: #1e293b;
-  --text-muted: #64748b;
-  --bg-slate: #f8fafc;
+  --text-main: #1e293b;
+  --text-light: #64748b;
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, sans-serif;
-  background: var(--bg-slate);
-  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  line-height: 1.6;
 }
 
-/* UI Structure */
+/* Header Styling */
+.main-header {
+  padding: 30px 20px;
+  background: white;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 5px;
+}
+
+/* Layout */
 .app-container {
   display: flex;
-  padding: 20px;
-  gap: 20px;
+  padding: 30px;
+  gap: 30px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .sidebar {
-  width: 350px;
+  width: 360px;
   flex-shrink: 0;
 }
 
@@ -33,165 +62,177 @@ body {
   flex-grow: 1;
 }
 
+/* Cards */
 .card {
-  background: white;
-  border: 1px solid var(--border);
-  padding: 20px;
-  margin-bottom: 20px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
 h3 {
-  margin: 0 0 15px 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-}
-
-/* TEAL BUTTONS */
-button {
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: 600;
-  border: none;
-  transition: 0.2s;
-}
-
-.btn-add {
-  width: 100%;
-  padding: 12px;
-  background: var(--primary-light);
-  color: var(--primary-teal);
-  border: 1px solid var(--primary-teal);
-}
-
-.btn-add:hover {
-  background: var(--primary-teal);
-  color: white;
-}
-
-.btn-generate {
-  width: 100%;
-  padding: 15px;
-  background: var(--primary-teal);
-  color: white;
-  font-size: 0.9rem;
-}
-
-.btn-generate:hover {
-  background: var(--primary-dark);
-}
-
-/* CHECKBOX FIX (Everything to the left) */
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.check-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  /* Aligns content to left */
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.check-container input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin: 0 10px 0 0;
-  /* Space only on the right */
-  cursor: pointer;
-  accent-color: var(--primary-teal);
-  /* Modern way to make checkbox teal */
-}
-
-/* Meal & Form Inputs */
-.meal-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.85rem;
-}
-
-.meal-row input {
-  width: 60px;
-}
-
-.input-group {
-  margin-bottom: 12px;
-}
-
-.input-group label {
-  display: block;
+  margin: 0 0 20px 0;
   font-size: 0.75rem;
   font-weight: 700;
-  margin-bottom: 4px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h3::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Inputs & Buttons */
+.section-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: block;
 }
 
 input,
 select {
   width: 100%;
-  padding: 8px;
+  box-sizing: border-box; /* ADD THIS LINE */
+  padding: 10px 14px;
+  border-radius: 8px;
   border: 1px solid var(--border);
-  box-sizing: border-box;
+  background: #fcfcfd;
+  font-family: inherit;
+  transition: all 0.2s;
 }
 
-.row {
-  display: flex;
-  gap: 10px;
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
 }
 
-/* Calendar Grid */
+.btn-add {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.btn-add:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-generate {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Calendar Grid Styling */
 .grid {
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
-  grid-auto-rows: 40px;
+  grid-auto-rows: 50px;
   position: relative;
+  background: white;
 }
 
 .cell {
-  border: 1px solid var(--border);
+  border: 0.5px solid #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  color: var(--text-light);
 }
 
 .header {
-  background: #f1f5f9;
-  font-weight: bold;
+  background: #f8fafc;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.time-label {
+  font-weight: 600;
+  color: var(--text-light);
+  background: #fdfdfd;
+}
+
+/* Dynamic Event Cards */
+.event-card {
+  border-radius: 6px;
+  font-size: 0.7rem;
+  padding: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s, z-index 0s;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.event-card:hover {
+  transform: scale(1.05);
+  z-index: 100 !important;
+}
+
+/* List Items */
+.med-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .med-item {
   display: flex;
   align-items: center;
+  background: #f8fafc;
+  margin-bottom: 8px;
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-radius: 8px;
 }
 
 .delete-btn {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
   background: #fee2e2;
-  color: #b91c1c;
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
+  color: #ef4444;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   margin-right: 12px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
+  font-size: 18px;
 }
 
-.delete-btn:hover {
-  background: #b91c1c;
-  color: white;
+.empty-state {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  padding: 20px 0;
+}
+
+.check-container {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.check-container input {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  accent-color: var(--primary);
 }
