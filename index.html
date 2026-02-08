@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DailyDose | Professional Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <div id="instructionsModal" class="modal-overlay">
+    <div class="modal-card instructions-card">
+      <h3 class="modal-title">Welcome to DailyDose</h3>
+
+      <div class="intro-section">
+        <p>
+          DailyDose is your personal medication scheduler. It helps you organize when to take your medications and
+          supplements throughout the day while automatically detecting and preventing potentially harmful drug
+          interactions.
+        </p>
+        <p>
+          The system spaces out medications that shouldn’t be taken close together, respects your mealtimes, and lets
+          you export your schedule in a calendar format so you can add it to your calendar app, or download it as a PNG
+          or PDF.
+        </p>
+      </div>
+
+      <div class="instructions-content">
+        <h4>How to Use (6 Simple Steps)</h4>
+        <ol>
+          <li><strong>Set Your Health Profile:</strong> Check any medical conditions you have and set your meal times
+            (breakfast, lunch, dinner)</li>
+          <li><strong>Add Medications:</strong> Enter medication name, dosage, how many times per day, and when to take
+            it (with meal, empty stomach, or anytime)</li>
+          <li><strong>Review Your List:</strong> Check all medications in your list before proceeding</li>
+          <li><strong>Generate Schedule:</strong> Click the green "Generate Schedule" button to create your optimal
+            timing. The system will automatically space out any drugs that interact with each other</li>
+          <li><strong>Review Safety Alerts:</strong> Check the red warning banners to understand any interactions
+            between your medications</li>
+          <li><strong>Export Your Schedule:</strong> Download as PDF to print, or export to sync with Google Calendar or
+            other calendar apps</li>
+        </ol>
+      </div>
+
+      <div class="disclaimer-box">
+        <em><strong>Important:</strong> DailyDose is a scheduling tool, not a medical advisor. Always consult your
+          doctor before starting new medications or changing your routine.</em>
+      </div>
+
+      <button id="closeInstructions" class="btn-generate">Let's Get Started</button>
+    </div>
+  </div>
+
+  <!-- outing for now, can add back later if we want to include a disclaimer on the page itself instead of just in the instructions modal
+  <div id="disclaimerModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3 class="disclaimer-title">Medical Disclaimer</h3>
+      <p>
+        DailyDose is a scheduling tool and <strong>not a substitute for professional medical advice</strong>.
+        Always consult with your doctor before starting new medications or changing your supplement routine.
+        By using this tool, you acknowledge that you are responsible for your own health decisions.
+      </p>
+      <button id="closeDisclaimer" class="btn-generate">I Understand & Agree</button>
+    </div>
+  </div>
+-->
+
+  <header class="main-header">
+    <div class="header-left">
+      <div class="logo">Daily<span>Dose</span></div>
+      <div class="subtitle">Medication and Vitamin Scheduling System</div>
+      <div class="tagline">So you don't overdose.</div>
+    </div>
+    <div class="header-right">
+      <button id="helpBtn" class="btn-export" title="Instructions">
+        Help
+      </button>
+      <button id="exportPDF" class="btn-export" title="Export as PDF">
+        PDF
+      </button>
+      <button id="exportPNG" class="btn-export" title="Export as PNG">
+        PNG
+      </button>
+      <button id="exportCalendar" class="btn-export" title="Export to Google Calendar">
+        Calendar
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <section class="schedule-section">
+      <div class="card calendar-card">
+        <div class="calendar-scroll-container">
+          <div id="grid" class="grid"></div>
+        </div>
+      </div>
+      <div id="warning-list-area"></div>
+    </section>
+
+    <aside class="sidebar">
+
+      <div class="card profile-card">
+        <h3>1. Health Profile</h3>
+        <label class="section-label">Medical Conditions</label>
+        <div class="checkbox-group" id="statusGroup">
+          <label class="check-container">
+            <input type="checkbox" value="pregnant">
+            <span>Pregnant / Nursing</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="diabetic">
+            <span>Diabetic</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="kidney">
+            <span>Kidney / Liver Concern</span>
+          </label>
+          <label class="check-container">
+            <input type="checkbox" value="high_bp">
+            <span>High Blood Pressure</span>
+          </label>
+        </div>
+
+        <div class="meal-scheduler">
+          <label class="section-label">Meal Times (24h)</label>
+          <div class="meal-row">
+            <span>Breakfast</span><input type="number" id="breakfastTime" value="8" min="0" max="23">
+          </div>
+          <div class="meal-row">
+            <span>Lunch</span><input type="number" id="lunchTime" value="13" min="0" max="23">
+          </div>
+          <div class="meal-row">
+            <span>Dinner</span><input type="number" id="dinnerTime" value="19" min="0" max="23">
+          </div>
+        </div>
+      </div>
+
+      <div class="card entry-card">
+        <h3>2. Add Medication</h3>
+        <form id="drugForm">
+          <div class="input-group">
+            <label class="section-label">Medication Name</label>
+            <input id="name" type="text" placeholder="e.g. Magnesium" required />
+          </div>
+          <div class="input-group">
+            <label class="section-label">Dosage</label>
+            <input id="dosage" type="text" placeholder="e.g. 200mg" required />
+          </div>
+          <div class="row" style="display:flex; gap:10px; margin-top:10px;">
+            <div class="input-group" style="flex:1;">
+              <label class="section-label">Freq (x/day)</label>
+              <input id="freq" type="number" min="1" max="6" value="1">
+            </div>
+            <div class="input-group" style="flex:1;">
+              <label class="section-label">Timing</label>
+              <select id="mealRelation">
+                <option value="any">Anytime</option>
+                <option value="with_meal">With Meal</option>
+                <option value="empty">Empty Stomach</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="section-label">Repeat Pattern</label>
+            <select id="repeatPattern">
+              <option value="daily">Every Day</option>
+              <option value="every_other_day">Every Other Day</option>
+              <option value="weekdays">Weekdays Only (Mon-Fri)</option>
+              <option value="weekends">Weekends Only (Sat-Sun)</option>
+              <option value="custom">Custom Days</option>
+            </select>
+          </div>
+          <div class="input-group" id="customDaysContainer" style="display:none;">
+            <label class="section-label">Select Days</label>
+            <div class="checkbox-group">
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="1"> <span>Monday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="2"> <span>Tuesday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="3"> <span>Wednesday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="4"> <span>Thursday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="5"> <span>Friday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="6"> <span>Saturday</span>
+              </label>
+              <label class="check-container">
+                <input type="checkbox" class="custom-day" value="7"> <span>Sunday</span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn-add">Add to List</button>
+        </form>
+      </div>
+
+      <div class="card list-card">
+        <h3>3. Current List</h3>
+        <ul id="list" class="med-list"></ul>
+        <div id="empty-msg" class="empty-state">No medications added.</div>
+        <button id="generate" class="btn-generate">Generate Schedule</button>
+      </div>
+
+    </aside>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="assets/js/schedule_algorithm.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/frontend.js" defer></script>
+</body>
+
+</html>

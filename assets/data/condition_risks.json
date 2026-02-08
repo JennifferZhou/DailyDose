@@ -1,0 +1,22 @@
+[
+  {
+    "condition": "pregnant",
+    "restricted_keywords": ["vitamin a", "retinol", "aspirin", "ibuprofen", "isotretinoin"],
+    "message": "High-dose Vitamin A and NSAIDs are generally restricted during pregnancy."
+  },
+  {
+    "condition": "diabetic",
+    "restricted_keywords": ["pseudoephedrine", "glucosamine", "cough syrup"],
+    "message": "This medication may significantly impact blood glucose levels."
+  },
+  {
+    "condition": "kidney",
+    "restricted_keywords": ["naproxen", "ibuprofen", "potassium supplement"],
+    "message": "NSAIDs and high potassium can be taxing on kidney/liver function."
+  },
+  {
+    "condition": "high_bp",
+    "restricted_keywords": ["sudafed", "phenylephrine", "licorice root"],
+    "message": "Decongestants are known to increase blood pressure."
+  }
+]
