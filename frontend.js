@@ -95,37 +95,62 @@ function renderAlgorithmSchedule(scheduleArray) {
     // Clear old cards first
     document.querySelectorAll(".event-card").forEach(el => el.remove());
 
-    scheduleArray.forEach((item, index) => {
-        // Handle "8:00" string or raw integer
+    // 1. Group items by their hour to find overlaps
+    const hourGroups = {};
+    scheduleArray.forEach(item => {
         const hour = typeof item.time === 'string' ? parseInt(item.time.split(":")[0]) : item.time;
+        if (!hourGroups[hour]) hourGroups[hour] = [];
+        hourGroups[hour].push(item);
+    });
 
-        // Loop through days 1 to 7 (Sun to Sat)
-        for (let day = 1; day <= 7; day++) {
-            createVisualCard(day, hour, item, index);
-        }
+    // 2. Render each group
+    Object.keys(hourGroups).forEach(hour => {
+        const medsInThisHour = hourGroups[hour];
+        const totalInHour = medsInThisHour.length;
+
+        medsInThisHour.forEach((item, index) => {
+            for (let day = 1; day <= 7; day++) {
+                // Pass the index and total count to the visual card creator
+                createVisualCard(day, parseInt(hour), item, index, totalInHour);
+            }
+        });
     });
 }
 
-function createVisualCard(day, hour, item, index) {
+function createVisualCard(day, hour, item, index, totalInHour) {
     const ev = document.createElement("div");
     ev.className = "event-card";
     ev.innerHTML = `<strong>${item.name}</strong><br>${item.dosage}`;
 
-    const rowH = 50; // Matches CSS grid-auto-rows
-    const colW = (grid.offsetWidth - 80) / 7; 
+    const rowH = 50; 
+    const fullColW = (grid.offsetWidth - 80) / 7; 
 
-    // Dynamic color based on medication index
+    // CALCULATE SPLIT WIDTH
+    // If there are 2 meds, each gets 50% width. If 3, each gets 33%, etc.
+    const splitW = (fullColW - 12) / totalInHour;
+    
     const hue = 160 + (index * 40) % 120;
     ev.style.backgroundColor = `hsl(${hue}, 60%, 40%)`;
     ev.style.color = "white";
     ev.style.position = "absolute";
 
-    // Coordinates: Skip header (hour + 1)
+    // COORDINATES
     ev.style.top = `${(hour + 1) * rowH + 4}px`;
-    ev.style.left = `${80 + (day - 1) * colW + 6}px`;
-    ev.style.width = `${colW - 12}px`;
+    
+    // SHIFT LEFT based on the index
+    // Base left + column offset + (index * width of one split card)
+    const baseLeft = 80 + (day - 1) * fullColW + 6;
+    ev.style.left = `${baseLeft + (index * splitW)}px`;
+    
+    ev.style.width = `${splitW}px`; // Use the new narrow width
     ev.style.height = `42px`;
-    ev.style.zIndex = 10;
+    ev.style.zIndex = 10 + index;
+
+    // Small UI polish: hide dosage if the box is too skinny
+    if (totalInHour > 2) {
+        ev.style.fontSize = "0.6rem";
+        ev.innerHTML = `<strong>${item.name}</strong>`;
+    }
 
     grid.appendChild(ev);
 }
