@@ -31,15 +31,16 @@
   </header>
 
   <main class="app-container">
+    
     <section class="schedule-section">
       <div class="card calendar-card">
         <div id="grid" class="grid"></div>
       </div>
-
       <div id="warning-list-area"></div>
     </section>
 
     <aside class="sidebar">
+      
       <div class="card profile-card">
         <h3>1. Health Profile</h3>
         <label class="section-label">Medical Conditions</label>
@@ -101,23 +102,22 @@
               </select>
             </div>
           </div>
-          <button type="submit" class="btn-add">Add to List of Medications/Vitamins</button>
+          <button type="submit" class="btn-add">Add to List</button>
         </form>
       </div>
 
       <div class="card list-card">
-        <h3>3. Current Medicine/Vitamins</h3>
+        <h3>3. Current List</h3>
         <ul id="list" class="med-list"></ul>
         <div id="empty-msg" class="empty-state">No medications/vitamins added.</div>
         <button id="generate" class="btn-generate">Generate Optimized Schedule</button>
       </div>
+      
     </aside>
   </main>
 
-<script src="schedule_algorithm.js"></script>
-    <script src="frontend.js"></script>
+  <script src="schedule_algorithm.js"></script>
+  <script src="frontend.js"></script>
     
 </body>
-</body>
-
 </html>

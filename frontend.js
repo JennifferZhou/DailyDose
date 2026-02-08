@@ -67,7 +67,7 @@ window.removeItem = (id) => {
     updateListUI();
 };
 
-// 3. Algorithm Hand-off
+// 3. Algorithm Hand-off & Rendering
 document.getElementById("generate").onclick = () => {
     const finalData = {
         userProfile: {
@@ -81,72 +81,67 @@ document.getElementById("generate").onclick = () => {
         medications: drugRegimen
     };
 
+    // The result from your schedule_algorithm.js
     const result = calculateMedicationSchedule(finalData);
-    renderResultsToGrid(result.schedule);
-    renderWarnings(result.warnings);
+
+    // Render the visual plan
+    renderAlgorithmSchedule(result);
+    
+    // Note: If your algorithm returns an object like {schedule: [], warnings: []}
+    // you would use result.schedule below instead.
 };
 
-// 4. Corrected Warning Function (Targeting the area below calendar)
-function renderWarnings(warnings) {
-    const container = document.getElementById("warning-list-area");
-    if (!container) return;
-    
-    container.innerHTML = ""; 
-
-    if (warnings && warnings.length > 0) {
-        warnings.forEach(msg => {
-            const banner = document.createElement("div");
-            banner.className = "warning-banner";
-            banner.innerHTML = `<strong>Warning:</strong> ${msg}`;
-            container.appendChild(banner);
-        });
-    }
-}
-
-function renderResultsToGrid(schedule) {
+function renderAlgorithmSchedule(scheduleArray) {
+    // Clear old cards first
     document.querySelectorAll(".event-card").forEach(el => el.remove());
-    schedule.forEach(item => {
-        placeEvent(item.day, item.hour, item, item.colorIndex);
+
+    scheduleArray.forEach((item, index) => {
+        // Handle "8:00" string or raw integer
+        const hour = typeof item.time === 'string' ? parseInt(item.time.split(":")[0]) : item.time;
+
+        // Loop through days 1 to 7 (Sun to Sat)
+        for (let day = 1; day <= 7; day++) {
+            createVisualCard(day, hour, item, index);
+        }
     });
 }
 
-function placeEvent(day, hour, med, index) {
+function createVisualCard(day, hour, item, index) {
     const ev = document.createElement("div");
     ev.className = "event-card";
-    ev.innerHTML = `<strong>${med.name}</strong><br>${med.dosage}`;
+    ev.innerHTML = `<strong>${item.name}</strong><br>${item.dosage}`;
 
-    const rowH = 60; 
-    const colW = (grid.offsetWidth - 80) / 7;
+    const rowH = 50; // Matches CSS grid-auto-rows
+    const colW = (grid.offsetWidth - 80) / 7; 
 
-    const hue = 160 + (index * 35) % 100;
+    // Dynamic color based on medication index
+    const hue = 160 + (index * 40) % 120;
     ev.style.backgroundColor = `hsl(${hue}, 60%, 40%)`;
     ev.style.color = "white";
     ev.style.position = "absolute";
+
+    // Coordinates: Skip header (hour + 1)
     ev.style.top = `${(hour + 1) * rowH + 4}px`;
     ev.style.left = `${80 + (day - 1) * colW + 6}px`;
     ev.style.width = `${colW - 12}px`;
-    ev.style.height = `52px`;
+    ev.style.height = `42px`;
     ev.style.zIndex = 10;
 
     grid.appendChild(ev);
 }
 
-// 5. Modal Logic (Fixed)
+// 4. Modal Logic
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("disclaimerModal");
     const closeBtn = document.getElementById("closeDisclaimer");
 
-    // Check session storage
     const hasAgreed = sessionStorage.getItem("disclaimerAgreed");
-
     if (hasAgreed === "true") {
-        modal.classList.add("hidden");
-    } else {
-        modal.classList.remove("hidden");
+        modal.style.display = "none";
     }
 
     closeBtn.onclick = () => {
-        modal.classList.add("hidden");
+        modal.style.display = "none";
         sessionStorage.setItem("disclaimerAgreed", "true");
     };
 });
