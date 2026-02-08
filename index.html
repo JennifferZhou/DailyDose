@@ -14,16 +14,16 @@
 <body>
 
   <div id="disclaimerModal" class="modal-overlay">
-  <div class="modal-card">
-    <h3>Medical Disclaimer</h3>
-    <p>
-      DailyDose is a scheduling tool and <strong>not a substitute for professional medical advice</strong>. 
-      Always consult with your doctor before starting new medications or changing your supplement routine. 
-      By using this tool, you acknowledge that you are responsible for your own health decisions.
-    </p>
-    <button id="closeDisclaimer" class="btn-generate">I Understand & Agree</button>
+    <div class="modal-card">
+      <h3>Medical Disclaimer</h3>
+      <p>
+        DailyDose is a scheduling tool and <strong>not a substitute for professional medical advice</strong>.
+        Always consult with your doctor before starting new medications or changing your supplement routine.
+        By using this tool, you acknowledge that you are responsible for your own health decisions.
+      </p>
+      <button id="closeDisclaimer" class="btn-generate">I Understand & Agree</button>
+    </div>
   </div>
-</div>
 
   <header class="main-header">
     <div class="logo">Daily<span>Dose</span></div>
@@ -35,6 +35,8 @@
       <div class="card calendar-card">
         <div id="grid" class="grid"></div>
       </div>
+
+      <div id="warning-list-area"></div>
     </section>
 
     <aside class="sidebar">
@@ -112,8 +114,10 @@
     </aside>
   </main>
 
-  <script src="script.js"></script>
-  <script src="main.js"></script>
+<script src="schedule_algorithm.js"></script>
+    <script src="frontend.js"></script>
+    
+</body>
 </body>
 
 </html>

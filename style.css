@@ -82,7 +82,7 @@ body {
 
 h3 {
   margin: 0 0 24px 0;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--primary);
   text-transform: uppercase;
@@ -235,13 +235,14 @@ input:focus, select:focus {
 .med-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: #ffffff;
   border: 1px solid var(--border);
   margin-bottom: 12px;
   padding: 16px;
   border-radius: 10px;
   transition: border-color 0.2s;
+  gap: 16px;
 }
 
 .med-item:hover {
@@ -252,6 +253,7 @@ input:focus, select:focus {
   font-size: 1rem;
   display: block;
   margin-bottom: 2px;
+  flex-grow: 1;
 }
 
 .delete-btn {
@@ -355,4 +357,30 @@ input:focus, select:focus {
   display: none;
   opacity: 0;
   pointer-events: none;
+}
+
+#warning-list-area {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.warning-banner {
+    background: #fff1f2;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #ef4444;
+    padding: 16px;
+    border-radius: 8px;
+    color: #991b1b;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.warning-banner strong {
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-right: 8px;
+    color: #ef4444;
 }
