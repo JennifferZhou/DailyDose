@@ -125,3 +125,20 @@ function placeEvent(day, hour, med, index) {
 
   grid.appendChild(ev);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("disclaimerModal");
+  const closeBtn = document.getElementById("closeDisclaimer");
+
+  // Check if user already agreed during this session
+  if (sessionStorage.getItem("disclaimerAgreed")) {
+    modal.classList.add("hidden");
+  }
+
+  closeBtn.onclick = () => {
+    // Hide the modal
+    modal.classList.add("hidden");
+    // Remember the choice for this session
+    sessionStorage.setItem("disclaimerAgreed", "true");
+  };
+});

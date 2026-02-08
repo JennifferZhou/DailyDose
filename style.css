@@ -1,37 +1,41 @@
 :root {
+  /* Refined Color Palette */
   --primary: #0d9488;
   --primary-dark: #0f766e;
   --primary-soft: #f0fdfa;
-  --bg: #f8fafc;
+  --bg: #f1f5f9; /* Slightly darker to let white cards pop */
   --card-bg: #ffffff;
   --border: #e2e8f0;
-  --text-main: #1e293b;
+  --text-main: #0f172a;
   --text-light: #64748b;
-  --radius: 12px;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --radius: 10px;
+  
+  /* Modern Depth Shadows */
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text-main);
-  line-height: 1.6;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Header Styling */
+/* --- Header Styling --- */
 .main-header {
-  padding: 30px 20px;
+  padding: 40px 20px;
   background: white;
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
 
 .logo {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--text-main);
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
 }
 
 .logo span {
@@ -39,22 +43,25 @@ body {
 }
 
 .tagline {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   color: var(--text-light);
-  margin-top: 5px;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Layout */
+/* --- Layout --- */
 .app-container {
   display: flex;
-  padding: 30px;
-  gap: 30px;
-  max-width: 1400px;
+  padding: 40px;
+  gap: 32px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
 .sidebar {
-  width: 360px;
+  width: 380px;
   flex-shrink: 0;
 }
 
@@ -62,69 +69,77 @@ body {
   flex-grow: 1;
 }
 
-/* Cards */
+/* --- Cards --- */
 .card {
   background: var(--card-bg);
   border-radius: var(--radius);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow: var(--shadow);
-  padding: 24px;
+  padding: 28px;
   margin-bottom: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 h3 {
-  margin: 0 0 20px 0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-light);
+  margin: 0 0 24px 0;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.12em;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 h3::after {
   content: "";
   flex-grow: 1;
   height: 1px;
-  background: var(--border);
+  background: var(--primary-soft);
 }
 
-/* Inputs & Buttons */
+/* --- Inputs & Buttons --- */
 .section-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 10px;
   display: block;
+  text-transform: uppercase;
 }
 
-input,
-select {
+input, select {
   width: 100%;
-  box-sizing: border-box; /* ADD THIS LINE */
-  padding: 10px 14px;
+  box-sizing: border-box;
+  padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid var(--border);
-  background: #fcfcfd;
+  border: 1.5px solid var(--border);
+  background: #ffffff;
   font-family: inherit;
-  transition: all 0.2s;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-input:focus {
+input:focus, select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+  box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
 .btn-add {
   width: 100%;
-  margin-top: 15px;
-  padding: 12px;
-  background: var(--primary-soft);
+  margin-top: 20px;
+  padding: 14px;
+  background: white;
   color: var(--primary);
-  border: 1px solid var(--primary);
+  border: 1.5px solid var(--primary);
   font-weight: 700;
+  font-size: 0.9rem;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .btn-add:hover {
@@ -134,21 +149,34 @@ input:focus {
 
 .btn-generate {
   width: 100%;
-  padding: 14px;
-  background: var(--primary);
+  padding: 16px;
+  background: var(--text-main);
   color: white;
   font-size: 1rem;
+  font-weight: 600;
+  border: none;
   border-radius: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* Calendar Grid Styling */
+.btn-generate:hover {
+  background: #334155;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Calendar Grid Styling --- */
 .grid {
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
-  grid-auto-rows: 50px;
+  grid-auto-rows: 60px;
   position: relative;
   background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
 }
 
 .cell {
@@ -161,78 +189,170 @@ input:focus {
 }
 
 .header {
-  background: #f8fafc;
+  background: #ffffff;
   font-weight: 700;
   color: var(--text-main);
+  border-bottom: 2px solid var(--primary-soft);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
 }
 
 .time-label {
   font-weight: 600;
   color: var(--text-light);
-  background: #fdfdfd;
+  background: #fcfcfd;
+  border-right: 2px solid var(--primary-soft);
 }
 
-/* Dynamic Event Cards */
+/* --- Dynamic Event Cards --- */
 .event-card {
   border-radius: 6px;
-  font-size: 0.7rem;
-  padding: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-left: 3px solid rgba(255, 255, 255, 0.4);
-  transition: transform 0.2s, z-index 0s;
+  font-size: 0.75rem;
+  padding: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
-  line-height: 1.2;
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .event-card:hover {
-  transform: scale(1.05);
-  z-index: 100 !important;
+  transform: scale(1.08);
+  z-index: 50 !important;
 }
 
-/* List Items */
+/* --- List Items --- */
 .med-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .med-item {
   display: flex;
   align-items: center;
-  background: #f8fafc;
-  margin-bottom: 8px;
-  padding: 10px;
-  border-radius: 8px;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.med-item:hover {
+  border-color: var(--primary);
+}
+
+.med-info strong {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 2px;
 }
 
 .delete-btn {
+  background: transparent;
+  color: #cbd5e1;
+  border: 1.5px solid #e2e8f0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
   background: #fee2e2;
   color: #ef4444;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  margin-right: 12px;
-  font-size: 18px;
+  border-color: #fecaca;
 }
 
 .empty-state {
   text-align: center;
   color: var(--text-light);
   font-size: 0.85rem;
-  padding: 20px 0;
+  font-style: italic;
+  padding: 30px 0;
+}
+
+/* --- Checkboxes --- */
+.checkbox-group {
+  padding: 8px 0;
 }
 
 .check-container {
   display: flex;
   align-items: center;
-  font-size: 0.85rem;
-  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 12px;
   cursor: pointer;
+  color: var(--text-main);
+  transition: color 0.2s;
+}
+
+.check-container:hover {
+  color: var(--primary);
 }
 
 .check-container input {
-  width: 18px;
-  height: 18px;
-  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
   accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* Disclaimer Popup Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6); /* Dark tint */
+  backdrop-filter: blur(8px); /* Modern blur effect */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Ensure it is above everything */
+  transition: opacity 0.3s ease;
+}
+
+.modal-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-card h3 {
+  color: #ef4444; /* Red to signal importance */
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.modal-card p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+/* Class to hide the modal */
+.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
