@@ -1,70 +1,51 @@
-function calculateMedicationSchedule(incomingData) {
+function calculateMedicationSchedule(data, interactionDB) {
+    const { userProfile, medications } = data;
+    const { breakfast, lunch, dinner } = userProfile.mealTimes;
+    const schedule = [];
+    const warnings = [];
 
-    const meds = incomingData.medications; 
-    const profile = incomingData.userProfile;
-    const mealTimes = [profile.mealTimes.breakfast, profile.mealTimes.lunch, profile.mealTimes.dinner];
-    
-    let schedule = [];
-
-    // Check conditions
-    const safeMeds = meds.filter(drug => {
-        let isSafe = true;
-        profile.conditions.forEach(condition => {
-            if (!checkDrugSafety(condition, drug)) {
-                isSafe = false;
-            }
-        });
-        return isSafe;
+    // 1. Check for Drug-Drug Interactions
+    const interactions = checkInteractions(medications, interactionDB);
+    interactions.forEach(inter => {
+        warnings.push(`Interaction between ${inter.pair[0]} and ${inter.pair[1]}: ${inter.description}`);
     });
 
-    // interaction check (Backend Mockup)
-    // Assuming checkInteractions returns an array of drugs that don't clash
-    const validatedMeds = typeof checkInteractions === 'function' 
-        ? checkInteractions(safeMeds) 
-        : safeMeds;
+    // 2. Medical Condition Warnings
+    if (userProfile.conditions.includes('kidney')) {
+        warnings.push("Kidney/Liver concern: Ensure you've discussed dosage clearance with your doctor.");
+    }
+    if (userProfile.conditions.includes('pregnant')) {
+        warnings.push("Pregnancy: Some supplements/meds cross the placenta. Verify safety with your OB-GYN.");
+    }
 
-    // logic 
-    validatedMeds.forEach(drug => {
-
-        if (drug.freq > 3) {
-            const dayStart = profile.mealTimes.breakfast;
-            const dayEnd = 22; 
-            const gap = Math.floor((dayEnd - dayStart) / (drug.freq - 1));
-            
-            for (let i = 0; i < drug.freq; i++) {
-                const time = dayStart + (i * gap);
-                addToSchedule(schedule, time, drug);
-            }
-        } 
-        else {
-            let buffer = (drug.mealRelation === "empty") ? -2 : 0;
-            
-            for (let i = 0; i < drug.freq; i++) {
-                const targetTime = mealTimes[i] + buffer;
-                addToSchedule(schedule, targetTime, drug);
+    // 3. Simple Scheduling Logic
+    medications.forEach(med => {
+        let times = [];
+        
+        // Logic based on frequency and meal relation
+        if (med.mealRelation === "with_meal") {
+            if (med.freq >= 1) times.push(breakfast);
+            if (med.freq >= 2) times.push(dinner);
+            if (med.freq >= 3) times.push(lunch);
+        } else if (med.mealRelation === "empty") {
+            // Take 1 hour before meals or late night
+            if (med.freq >= 1) times.push((breakfast - 1 + 24) % 24);
+            if (med.freq >= 2) times.push((dinner - 1 + 24) % 24);
+        } else {
+            // Anytime - Space out evenly starting at 9am
+            for (let i = 0; i < med.freq; i++) {
+                times.push((9 + (i * Math.floor(12 / med.freq))) % 24);
             }
         }
+
+        times.forEach(t => {
+            schedule.push({
+                name: med.name,
+                dosage: med.dosage,
+                time: `${t}:00`
+            });
+        });
     });
 
-    return schedule;
-}
-
-function checkDrugSafety(condition, drug) {
-    const restrictions = {
-        "kidney": ["ibuprofen", "naproxen"],
-        "pregnant": ["retinoids", "warfarin"],
-        "high_bp": ["pseudoephedrine"]
-    };
-
-    const forbidden = restrictions[condition] || [];
-    return !forbidden.includes(drug.name.toLowerCase());
-}
-
-function addToSchedule(schedule, time, drug) {
-    const normalizedTime = (time + 24) % 24; 
-    schedule.push({
-        time: `${normalizedTime}:00`,
-        name: drug.name,
-        dosage: drug.dosage
-    });
+    return { schedule, warnings };
 }

@@ -1,11 +1,18 @@
+// Ensure we select existing DOM elements
 const grid = document.getElementById("grid");
 const emptyMsg = document.getElementById("empty-msg");
+const warningArea = document.getElementById("warning-list-area");
 const days = ["Time", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let drugRegimen = [];
 
 // 1. Initialize Grid
 function createGrid() {
     grid.innerHTML = "";
+    // Set explicit grid template for easier calculation
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = "80px repeat(7, 1fr)";
+    grid.style.position = "relative"; // REQUIRED for absolute cards
+
     days.forEach(day => {
         const div = document.createElement("div");
         div.className = "cell header";
@@ -62,13 +69,23 @@ function updateListUI() {
     });
 }
 
+// Fixed: Attach removeItem to window so inline onclick works
 window.removeItem = (id) => {
     drugRegimen = drugRegimen.filter(i => i.id !== id);
     updateListUI();
 };
 
 // 3. Algorithm Hand-off & Rendering
-document.getElementById("generate").onclick = () => {
+document.getElementById("generate").onclick = async () => {
+    // Safety check: ensure the functions from other files exist
+    if (typeof loadInteractions !== 'function' || typeof calculateMedicationSchedule !== 'function') {
+        console.error("Critical: main.js or schedule_algorithm.js not loaded.");
+        alert("System error: Interaction logic not found.");
+        return;
+    }
+
+    const interactionDB = await loadInteractions();
+
     const finalData = {
         userProfile: {
             conditions: Array.from(document.querySelectorAll('#statusGroup input:checked')).map(cb => cb.value),
@@ -81,21 +98,26 @@ document.getElementById("generate").onclick = () => {
         medications: drugRegimen
     };
 
-    // The result from your schedule_algorithm.js
-    const result = calculateMedicationSchedule(finalData);
-
-    // Render the visual plan
-    renderAlgorithmSchedule(result);
-    
-    // Note: If your algorithm returns an object like {schedule: [], warnings: []}
-    // you would use result.schedule below instead.
+    const result = calculateMedicationSchedule(finalData, interactionDB);
+    displayWarnings(result.warnings);
+    renderAlgorithmSchedule(result.schedule);
 };
 
+function displayWarnings(warnings) {
+    warningArea.innerHTML = ""; 
+    if (warnings && warnings.length > 0) {
+        warnings.forEach(msg => {
+            const warnBox = document.createElement('div');
+            warnBox.className = "warning-banner"; 
+            warnBox.innerHTML = `<strong>IMPORTANT</strong> ${msg.replace(/⚠️|🚨/g, '')}`;
+            warningArea.appendChild(warnBox);
+        });
+    }
+}
+
 function renderAlgorithmSchedule(scheduleArray) {
-    // Clear old cards first
     document.querySelectorAll(".event-card").forEach(el => el.remove());
 
-    // 1. Group items by their hour to find overlaps
     const hourGroups = {};
     scheduleArray.forEach(item => {
         const hour = typeof item.time === 'string' ? parseInt(item.time.split(":")[0]) : item.time;
@@ -103,15 +125,11 @@ function renderAlgorithmSchedule(scheduleArray) {
         hourGroups[hour].push(item);
     });
 
-    // 2. Render each group
     Object.keys(hourGroups).forEach(hour => {
         const medsInThisHour = hourGroups[hour];
-        const totalInHour = medsInThisHour.length;
-
         medsInThisHour.forEach((item, index) => {
             for (let day = 1; day <= 7; day++) {
-                // Pass the index and total count to the visual card creator
-                createVisualCard(day, parseInt(hour), item, index, totalInHour);
+                createVisualCard(day, parseInt(hour), item, index, medsInThisHour.length);
             }
         });
     });
@@ -122,31 +140,30 @@ function createVisualCard(day, hour, item, index, totalInHour) {
     ev.className = "event-card";
     ev.innerHTML = `<strong>${item.name}</strong><br>${item.dosage}`;
 
+    // Improved math for card placement
     const rowH = 50; 
-    const fullColW = (grid.offsetWidth - 80) / 7; 
-
-    // CALCULATE SPLIT WIDTH
-    // If there are 2 meds, each gets 50% width. If 3, each gets 33%, etc.
-    const splitW = (fullColW - 12) / totalInHour;
+    const headerH = 40; // Height of the "Day" labels
+    const colW = (grid.offsetWidth - 80) / 7; 
+    const splitW = (colW - 4) / totalInHour; // Gap calculation
     
-    const hue = 160 + (index * 40) % 120;
-    ev.style.backgroundColor = `hsl(${hue}, 60%, 40%)`;
+    const hue = 200 + (index * 60); // Variations of professional blue
+    ev.style.backgroundColor = `hsl(${hue}, 70%, 45%)`;
     ev.style.color = "white";
     ev.style.position = "absolute";
+    ev.style.borderRadius = "4px";
+    ev.style.padding = "2px";
+    ev.style.fontSize = "0.7rem";
+    ev.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
 
-    // COORDINATES
-    ev.style.top = `${(hour + 1) * rowH + 4}px`;
-    
-    // SHIFT LEFT based on the index
-    // Base left + column offset + (index * width of one split card)
-    const baseLeft = 80 + (day - 1) * fullColW + 6;
+    // Top calculation accounts for the header row
+    ev.style.top = `${headerH + (hour * rowH) + 4}px`;
+    const baseLeft = 80 + (day - 1) * colW + 2;
     ev.style.left = `${baseLeft + (index * splitW)}px`;
     
-    ev.style.width = `${splitW}px`; // Use the new narrow width
+    ev.style.width = `${splitW - 2}px`;
     ev.style.height = `42px`;
     ev.style.zIndex = 10 + index;
 
-    // Small UI polish: hide dosage if the box is too skinny
     if (totalInHour > 2) {
         ev.style.fontSize = "0.6rem";
         ev.innerHTML = `<strong>${item.name}</strong>`;
@@ -159,12 +176,9 @@ function createVisualCard(day, hour, item, index, totalInHour) {
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("disclaimerModal");
     const closeBtn = document.getElementById("closeDisclaimer");
-
-    const hasAgreed = sessionStorage.getItem("disclaimerAgreed");
-    if (hasAgreed === "true") {
+    if (sessionStorage.getItem("disclaimerAgreed") === "true") {
         modal.style.display = "none";
     }
-
     closeBtn.onclick = () => {
         modal.style.display = "none";
         sessionStorage.setItem("disclaimerAgreed", "true");
